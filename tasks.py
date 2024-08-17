@@ -7,5 +7,4 @@ def minimal_task():
     scraper = NewsScraper()
     scraper.set_webdriver()
     scraper.open_url(url)
-    scraper.full_page_screenshot(url)
     scraper.driver_quit()

@@ -15,7 +15,7 @@ class NewsScraper:
 
     def set_chrome_options(self):
         options = Options()
-        options.add_argument('--headless')
+        #options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-extensions')
         options.add_argument('--disable-gpu')
@@ -41,7 +41,7 @@ class NewsScraper:
         if not self.driver:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
-        current_window_size = self.driver.get_window_size()
+        #current_window_size = self.driver.get_window_size()
         self.driver.set_window_size(width, height)
 
     def open_url(self, url: str, screenshot: str = None):
@@ -58,19 +58,3 @@ class NewsScraper:
         if self.driver:
             self.driver.quit()
             self.logger.info("Driver quit successfully.")
-
-    def full_page_screenshot(self, url: str):
-        if not self.driver:
-            self.logger.error("Driver not initialized.")
-            raise RuntimeError("Driver not initialized.")
-
-        self.driver.get(url)
-        self.driver.execute_script("window.scrollTo(0, 0);")
-
-        page_width = self.driver.execute_script('return document.body.scrollWidth')
-        page_height = self.driver.execute_script('return document.body.scrollHeight')
-
-        self.driver.set_window_size(page_width, page_height)
-        self.driver.save_screenshot('screenshot.png')
-        self.logger.info("Full page screenshot saved as screenshot.png.")
-        self.driver.quit()
