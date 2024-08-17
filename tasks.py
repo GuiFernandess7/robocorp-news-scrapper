@@ -1,10 +1,12 @@
 from robocorp.tasks import task
-from robocorp.tasks import task
-from scraper import NewsScraper
 from robocorp import workitems
+
+from scraper import NewsScraper
 
 @task
 def minimal_task():
     scraper = NewsScraper()
-    scraper.open_browser("https://www.reuters.com")
-    scraper.close_browser()
+    scraper.set_webdriver()
+    scraper.open_url("https://www.reuters.com", screenshot="homepage.png")
+    scraper.full_page_screenshot("https://www.reuters.com")
+    scraper.driver_quit()
