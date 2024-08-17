@@ -20,7 +20,7 @@ class NewsScraper:
         options.add_argument('--disable-extensions')
         options.add_argument('--disable-gpu')
         options.add_argument('--disable-web-security')
-        options.add_argument('--disable-dev-shm-usage')        
+        options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--start-maximized')
         options.add_argument('--remote-debugging-port=9222')
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
@@ -42,7 +42,7 @@ class NewsScraper:
         if not self.driver:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
-        #current_window_size = self.driver.get_window_size()
+        current_window_size = self.driver.get_window_size()
         self.driver.set_window_size(width, height)
 
     def open_url(self, url: str, screenshot: str = None):
