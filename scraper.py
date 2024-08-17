@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
-class CustomSelenium:
+class NewsScraper:
 
     def __init__(self):
         self.driver = None
