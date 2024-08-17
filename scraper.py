@@ -14,7 +14,7 @@ class NewsScraper:
         self.browser = Selenium()
 
     def open_url(self, url):
-        self.browser.open_browser(url)
+        self.browser.open_browser(url, browser = 'chrome')
 
     def close_browser(self):
         self.browser.close_browser()
