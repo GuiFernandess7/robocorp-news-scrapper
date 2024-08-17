@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
-class NewsScraper:
+class CustomSelenium:
 
     def __init__(self):
         self.driver = None
@@ -15,7 +15,7 @@ class NewsScraper:
 
     def set_chrome_options(self):
         options = Options()
-        #options.add_argument('--headless')
+        options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-extensions')
         options.add_argument('--disable-gpu')
@@ -41,7 +41,6 @@ class NewsScraper:
         if not self.driver:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
-
         current_window_size = self.driver.get_window_size()
         self.driver.set_window_size(width, height)
 
