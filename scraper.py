@@ -1,26 +1,14 @@
 """Module for scraping news from Reuters"""
 
-""" import logging
+import logging
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager """
-
-from RPA.Browser.Selenium import Selenium
+from webdriver_manager.chrome import ChromeDriverManager
 
 class NewsScraper:
 
     def __init__(self):
-        self.browser = Selenium()
-
-    def open_url(self, url):
-        self.browser.open_browser(url, browser = 'chrome')
-
-    def close_browser(self):
-        self.browser.close_browser()
-
-
-    """ def __init__(self):
         self.driver = None
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
@@ -86,4 +74,4 @@ class NewsScraper:
         self.driver.set_window_size(page_width, page_height)
         self.driver.save_screenshot('screenshot.png')
         self.logger.info("Full page screenshot saved as screenshot.png.")
-        self.driver.quit() """
+        self.driver.quit()
