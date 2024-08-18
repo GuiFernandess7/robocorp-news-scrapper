@@ -1,8 +1,8 @@
-# Template: Python - Minimal
+# Python - Minimal | RoboCorp Challenge - News Scrapper
 
 This template leverages the new [Python framework](https://github.com/robocorp/robocorp), the [libraries](https://github.com/robocorp/robocorp/blob/master/docs/README.md#python-libraries) from to same project as well.
 
-The template provides you with the basic structure of a Python project: logging out of the box and controlling your tasks without fiddling with the base Python stuff. The environment contains the most used libraries, so you do not have to start thinking about those right away. 
+The template provides you with the basic structure of a Python project: logging out of the box and controlling your tasks without fiddling with the base Python stuff. The environment contains the most used libraries, so you do not have to start thinking about those right away.
 
 👉 Other templates are available as well via our tooling and on our [Portal](https://robocorp.com/portal/tag/template)
 
@@ -33,7 +33,7 @@ Think of [conda.yaml](conda.yaml) as an equivalent of the requirements.txt, but 
 👉 You will probably need to run your code on another machine quite soon, so by using `conda.yaml`:
 - You can avoid `Works on my machine` -cases
 - You do not need to manage Python installations on all the machines
-- You can control exactly which version of Python your automation will run on 
+- You can control exactly which version of Python your automation will run on
   - You'll also control the pip version to avoid dep. resolution changes
 - No need for venv, pyenv, ... tooling and knowledge sharing inside your team.
 - Define dependencies in conda.yaml, let our tooling do the heavy lifting.
