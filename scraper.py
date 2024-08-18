@@ -175,7 +175,7 @@ class NewsScraper:
         return results
 
     @staticmethod
-    def write_to_excel(results, news):
+    def write_to_excel(results, news: News, file: str):
         wb = Workbook()
         ws = wb.active
         ws.title = "News"
@@ -186,7 +186,7 @@ class NewsScraper:
         for employee in results:
             ws.append(employee)
 
-        wb.save('./output/results.xlsx')
+        wb.save(f'./output/{file}')
 
     def driver_quit(self):
         if self.driver:
