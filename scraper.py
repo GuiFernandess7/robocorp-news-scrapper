@@ -40,6 +40,7 @@ class NewsScraper:
         logging.basicConfig(level=logging.INFO)
 
     def set_chrome_options(self):
+        """Chrome configuration settings"""
         options = Options()
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
@@ -51,9 +52,11 @@ class NewsScraper:
         options.add_argument("--remote-debugging-port=9222")
         options.add_argument("--window-size=1920,1080")
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
+
         return options
 
     def set_webdriver(self, browser="Chrome"):
+        """Webdriver install and setup."""
         options = self.set_chrome_options()
         if browser.lower() == "chrome":
             self.logger.warning("Using Chrome WebDriver.")
@@ -65,30 +68,33 @@ class NewsScraper:
             raise ValueError("Unsupported browser")
 
     def __check_driver(self):
+        """Check if driver is enabled"""
         if not self.driver:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
 
-    def open_url(self, url: str, screenshot: str = None):
+    def open_url(self, url: str):
+        """Open News URL."""
         self.__check_driver()
         self.driver.get(url)
-        if screenshot:
-            self.driver.get_screenshot_as_file(screenshot)
-            self.logger.info(f"Screenshot saved as {screenshot}")
 
     def count_occurrences(self, text: str, phrase: str) -> int:
+        """Count occurrences of text"""
         return text.lower().count(phrase.lower())
 
     def search(self, search_phrase: str):
+        """Click and enter the search phrase in the search bar."""
         self._click_search_button()
         self._enter_search_phrase(search_phrase)
 
     def _click_search_button(self):
+        """Find button element and execute click."""
         element = self.driver.find_element(
             By.CLASS_NAME, "SearchOverlay-search-button")
         self.driver.execute_script("arguments[0].click();", element)
 
     def _enter_search_phrase(self, search_phrase: str):
+        """Find search bar element and send keys."""
         search_input = WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located(
                 (By.CLASS_NAME, "SearchOverlay-search-input")
@@ -98,6 +104,7 @@ class NewsScraper:
         search_input.send_keys(Keys.RETURN)
 
     def get_news_tags(self):
+        """Get all news by tags."""
         results_div = WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located(
                 (By.CLASS_NAME, "SearchResultsModule-results")
@@ -106,6 +113,7 @@ class NewsScraper:
         return results_div.find_elements(By.CLASS_NAME, "PageList-items-item")
 
     def extract_news_detail(self, item, class_name: str, default: str) -> str:
+        """Extract news details based on class name."""
         try:
             item_content = item.find_element(
                 By.XPATH,
@@ -119,6 +127,7 @@ class NewsScraper:
             return default
 
     def extract_news_picture(self, item, default=""):
+        """Extract news picture address."""
         try:
             item_content = item.find_element(
                 By.XPATH,
@@ -136,6 +145,7 @@ class NewsScraper:
             return default
 
     def get_months(self, month: int = 0):
+        """Get months based on int parameter."""
         if month < 0:
             raise ValueError("Invalid month.")
 
@@ -153,12 +163,14 @@ class NewsScraper:
         return months_to_check_names
 
     def contains_money(self, text):
+        """Apply regex to check if money is found."""
         import re
 
         pattern = r"/^\$?(\d+(?:\.\d{1,2})?)$/"
         return re.search(pattern, text, re.IGNORECASE) is not None
 
     def get_results(self, search_phrase: str, month: int = 0):
+        """Loop through news tags getting all the deatils needed."""
         months = self.get_months(month=month)
         news_tags = self.get_news_tags()
         results = []
@@ -195,6 +207,7 @@ class NewsScraper:
 
     @staticmethod
     def write_to_excel(results, news: News, file: str):
+        """Write the results to a excel sheet."""
         wb = Workbook()
         ws = wb.active
         ws.title = "News"
@@ -208,6 +221,7 @@ class NewsScraper:
         wb.save(f"./output/{file}")
 
     def driver_quit(self):
+        """Quit the driver."""
         if self.driver:
             self.driver.quit()
             self.logger.info("Driver quit successfully.")
