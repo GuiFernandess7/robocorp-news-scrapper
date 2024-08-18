@@ -89,12 +89,21 @@ class NewsScraper:
         )
         return results_div.find_elements(By.CLASS_NAME, 'PageList-items-item')
 
-    def extract_item_detail(self, item, class_name: str, default: str) -> str:
+    def extract_news_detail(self, item, class_name: str, default: str) -> str:
         try:
             item_content = item.find_element(By.XPATH, f".//div[contains(@class, 'PagePromo')]//div[contains(@class, 'PagePromo-content')]")
             return item_content.find_element(By.XPATH, f".//div[contains(@class, '{class_name}')]").text
         except Exception as e:
             self.logger.error(f"Error finding {class_name}: {e}")
+            return default
+
+    def extract_news_picture(self, item, default=""):
+        try:
+            item_content = item.find_element(By.XPATH, f".//div[contains(@class, 'PagePromo')]//div[contains(@class, 'PagePromo-media')]")
+            img_element = item_content.find_element(By.XPATH, f".//a[contains(@class, 'Link')]//img[contains(@class, 'Image')]")
+            return img_element.get_attribute('src')
+        except Exception as e:
+            self.logger.error(f"Error finding picture: {e}")
             return default
 
     def get_months(self, month: int = 0):
@@ -121,9 +130,10 @@ class NewsScraper:
 
         for item in items:
             contains_money = False
-            title = self.extract_item_detail(item, 'PagePromo-title', " ")
-            description = self.extract_item_detail(item, 'PagePromo-description', " ")
-            date = self.extract_item_detail(item, 'PagePromo-byline', " ")
+            title = self.extract_news_detail(item, 'PagePromo-title', " ")
+            description = self.extract_news_detail(item, 'PagePromo-description', " ")
+            date = self.extract_news_detail(item, 'PagePromo-byline', " ")
+            picture = self.extract_news_picture(item)
             title_occ = self.count_occurrences(title, phrase=search_phrase)
             description_occ = self.count_occurrences(description, phrase=search_phrase)
 
@@ -137,6 +147,7 @@ class NewsScraper:
                 print(title_occ)
                 print(description_occ)
                 print(contains_money)
+                print(picture)
                 print("---------------------------------")
 
     def driver_quit(self):
