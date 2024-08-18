@@ -16,7 +16,7 @@ def run_news_task():
 
     scraper.search(search_phrase)
     results = scraper.get_results()
-    scraper.store_results(results, search_phrase)
+    scraper.read_results(results, search_phrase, month=0)
 
     scraper.driver_quit()
 
