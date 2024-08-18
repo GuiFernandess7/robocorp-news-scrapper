@@ -13,6 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 from datetime import datetime
 from collections import namedtuple
+from openpyxl import Workbook
 import logging
 
 
@@ -173,8 +174,19 @@ class NewsScraper:
 
         return results
 
-    def write_results_to_file():
-        pass
+    @staticmethod
+    def write_to_excel(results, news):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "News"
+
+        headers = news._fields
+        ws.append(headers)
+
+        for employee in results:
+            ws.append(employee)
+
+        wb.save('./output/results.xlsx')
 
     def driver_quit(self):
         if self.driver:
