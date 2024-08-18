@@ -3,7 +3,6 @@ from RPA.Robocorp.WorkItems import WorkItems
 from scraper import NewsScraper
 
 import os
-import logging
 
 @task
 def run_news_task():
@@ -15,8 +14,9 @@ def run_news_task():
     scraper.open_url(url)
 
     scraper.search(search_phrase)
-    results = scraper.get_results()
-    scraper.read_results(results, search_phrase, month=0)
+    results = scraper.get_results(search_phrase, month=0)
+    print(results)
+    #scraper.read_results(results, search_phrase, month=0)
 
     scraper.driver_quit()
 
