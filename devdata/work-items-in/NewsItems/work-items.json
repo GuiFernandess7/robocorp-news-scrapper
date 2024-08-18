@@ -1,9 +1,9 @@
 [
   {
     "payload": {
-      "search_phrase": "Artificial Intelligence",
-      "news_category": "LIVE BLOGS",
-      "number_of_months": 1
+      "SEARCH_PHRASE": "Artificial Intelligence",
+      "CATEGORY": "LIVE BLOGS",
+      "MONTHS": 2
     },
     "files": {
       "orders.xlsx": "orders.xlsx"
