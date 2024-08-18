@@ -113,7 +113,7 @@ class NewsScraper:
 
     def contains_money(self, text):
         import re
-        pattern = r'\$\d+(?:,\d{3})*(?:\.\d{2})?|\b\d+(?:,\d{3})*(?:\.\d{2})?\s*(?:dollars|USD|usd|)?\b'
+        pattern = r'/^\$?(\d+(?:\.\d{1,2})?)$/'
         return re.search(pattern, text, re.IGNORECASE) is not None
 
     def read_results(self, items, search_phrase: str, month: int = 0):
