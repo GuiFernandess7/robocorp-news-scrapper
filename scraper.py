@@ -48,6 +48,7 @@ class NewsScraper:
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--start-maximized')
         options.add_argument('--remote-debugging-port=9222')
+        options.add_argument("--window-size=1920,1080")
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
         return options
 
@@ -68,19 +69,6 @@ class NewsScraper:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
 
-    def set_page_size(self, width:int, height:int):
-        self.__check_driver()
-        current_window_size = self.driver.get_window_size()
-        html = self.driver.find_element_by_tag_name('html')
-        inner_width = int(html.get_attribute("clientWidth"))
-        inner_height = int(html.get_attribute("clientHeight"))
-
-        target_width = width + (current_window_size["width"] - inner_width)
-        target_height = height + (current_window_size["height"] - inner_height)
-        self.driver.set_window_rect(
-            width=target_width,
-            height=target_height)
-
     def open_url(self, url: str, screenshot: str = None):
         self.__check_driver()
         self.driver.get(url)
@@ -96,17 +84,10 @@ class NewsScraper:
         self._enter_search_phrase(search_phrase)
 
     def _click_search_button(self):
-        try:
-            self._close_overlay()
-
-            search_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, 'SearchOverlay-search-button'))
-            )
-            search_button.click()
-
-        except Exception as e:
-            self.logger.error(f"Error clicking search button: {e}")
-            raise
+        search_button = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CLASS_NAME, 'SearchOverlay-search-button'))
+        )
+        search_button.click()
 
     def _enter_search_phrase(self, search_phrase: str):
         search_input = WebDriverWait(self.driver, 10).until(
