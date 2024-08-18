@@ -42,10 +42,11 @@ class NewsScraper:
         options = Options()
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
-        options.add_argument("--disable-extensions")
-        options.add_argument("--disable-gpu")
+        options.add_argument('--disable-extensions')
+        options.add_argument('--disable-gpu')
         options.add_argument('--disable-web-security')
-        options.add_argument("--start-maximized")
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--start-maximized')
         options.add_argument('--remote-debugging-port=9222')
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
         return options
@@ -66,6 +67,19 @@ class NewsScraper:
         if not self.driver:
             self.logger.error("Driver not initialized.")
             raise RuntimeError("Driver not initialized.")
+
+    def set_page_size(self, width:int, height:int):
+        self.__check_driver()
+        current_window_size = self.driver.get_window_size()
+        html = self.driver.find_element_by_tag_name('html')
+        inner_width = int(html.get_attribute("clientWidth"))
+        inner_height = int(html.get_attribute("clientHeight"))
+
+        target_width = width + (current_window_size["width"] - inner_width)
+        target_height = height + (current_window_size["height"] - inner_height)
+        self.driver.set_window_rect(
+            width=target_width,
+            height=target_height)
 
     def open_url(self, url: str, screenshot: str = None):
         self.__check_driver()
