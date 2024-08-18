@@ -19,6 +19,7 @@ class NewsScraper:
     def __init__(self):
         self.driver = None
         self.logger = logging.getLogger(__name__)
+        self.results = []
         logging.basicConfig(level=logging.INFO)
 
     def set_chrome_options(self):
@@ -96,25 +97,46 @@ class NewsScraper:
             self.logger.error(f"Error finding {class_name}: {e}")
             return default
 
-    def store_results(self, items, search_phrase: str, month: int = 0):
+    def get_months(self, month: int = 0):
         if month < 0:
             raise ValueError("Invalid month.")
 
-        current_month = datetime.now().strftime('%B')
+        current_month = datetime.now().month
+
+        if month == 0:
+            months_to_check = [current_month]
+        else:
+            months_to_check = [(current_month - i) % 12 or 12 for i in range(month)]
+
+        months_to_check_names = [datetime(2024, m, 1).strftime('%B') for m in months_to_check]
+        return months_to_check_names
+
+    def contains_money(self, text):
+        import re
+        pattern = r'\$\d+(?:,\d{3})*(?:\.\d{2})?|\b\d+(?:,\d{3})*(?:\.\d{2})?\s*(?:dollars|USD|usd|)?\b'
+        return re.search(pattern, text, re.IGNORECASE) is not None
+
+    def read_results(self, items, search_phrase: str, month: int = 0):
+        months = self.get_months(month=month)
 
         for item in items:
-            title = self.extract_item_detail(item, 'PagePromo-title', "No title available")
-            description = self.extract_item_detail(item, 'PagePromo-description', "No description available")
-            date = self.extract_item_detail(item, 'PagePromo-byline', "No date available")
+            contains_money = False
+            title = self.extract_item_detail(item, 'PagePromo-title', " ")
+            description = self.extract_item_detail(item, 'PagePromo-description', " ")
+            date = self.extract_item_detail(item, 'PagePromo-byline', " ")
             title_occ = self.count_occurrences(title, phrase=search_phrase)
             description_occ = self.count_occurrences(description, phrase=search_phrase)
 
-            if current_month in date:
+            if self.contains_money(title) or self.contains_money(description):
+                contains_money = True
+
+            if any(month in date for month in months):
                 print(title)
                 print(description)
                 print(date)
                 print(title_occ)
                 print(description_occ)
+                print(contains_money)
                 print("---------------------------------")
 
     def driver_quit(self):
