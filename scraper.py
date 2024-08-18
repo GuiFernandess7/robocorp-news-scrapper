@@ -12,7 +12,22 @@ from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager
 
 from datetime import datetime
+from collections import namedtuple
 import logging
+
+
+News = namedtuple(
+    'News',
+    [
+        'title',
+        'description',
+        'date',
+        'pic_filename',
+        'title_occurrences',
+        'description_occurrences',
+        'contains_money'
+    ]
+)
 
 class NewsScraper:
     """Class for Scrapping news."""
@@ -20,7 +35,6 @@ class NewsScraper:
     def __init__(self):
         self.driver = None
         self.logger = logging.getLogger(__name__)
-        self.results = []
         logging.basicConfig(level=logging.INFO)
 
     def set_chrome_options(self):
@@ -84,7 +98,7 @@ class NewsScraper:
         search_input.send_keys(search_phrase)
         search_input.send_keys(Keys.RETURN)
 
-    def get_results(self):
+    def get_news_tags(self):
         results_div = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'SearchResultsModule-results'))
         )
@@ -128,30 +142,39 @@ class NewsScraper:
         pattern = r'/^\$?(\d+(?:\.\d{1,2})?)$/'
         return re.search(pattern, text, re.IGNORECASE) is not None
 
-    def read_results(self, items, search_phrase: str, month: int = 0):
+    def get_results(self, search_phrase: str, month: int = 0):
         months = self.get_months(month=month)
+        news_tags = self.get_news_tags()
+        results = []
 
-        for item in items:
-            contains_money = False
-            title = self.extract_news_detail(item, 'PagePromo-title', " ")
-            description = self.extract_news_detail(item, 'PagePromo-description', " ")
-            date = self.extract_news_detail(item, 'PagePromo-byline', " ")
-            picture = self.extract_news_picture(item)
+        for news in news_tags:
+            title = self.extract_news_detail(news, 'PagePromo-title', " ")
+            description = self.extract_news_detail(news, 'PagePromo-description', " ")
+            date = self.extract_news_detail(news, 'PagePromo-byline', " ")
+            picture = self.extract_news_picture(news)
+
             title_occ = self.count_occurrences(title, phrase=search_phrase)
             description_occ = self.count_occurrences(description, phrase=search_phrase)
 
-            if self.contains_money(title) or self.contains_money(description):
-                contains_money = True
+            contains_money = self.contains_money(title) or self.contains_money(description)
 
             if any(month in date for month in months):
-                print(title)
-                print(description)
-                print(date)
-                print(title_occ)
-                print(description_occ)
-                print(contains_money)
-                print(picture)
-                print("---------------------------------")
+                results.append(
+                    News(
+                        title=title,
+                        description=description,
+                        date=date,
+                        pic_filename=picture,
+                        title_occurrences=title_occ,
+                        description_occurrences=description_occ,
+                        contains_money=contains_money
+                    )
+                )
+
+        return results
+
+    def write_results_to_file():
+        pass
 
     def driver_quit(self):
         if self.driver:
