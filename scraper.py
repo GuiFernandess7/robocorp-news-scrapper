@@ -84,20 +84,20 @@ class NewsScraper:
         self._enter_search_phrase(search_phrase)
 
     def _click_search_button(self):
-        search_button = WebDriverWait(self.driver, 10).until(
+        search_button = WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable((By.CLASS_NAME, 'SearchOverlay-search-button'))
         )
         search_button.click()
 
     def _enter_search_phrase(self, search_phrase: str):
-        search_input = WebDriverWait(self.driver, 10).until(
+        search_input = WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'SearchOverlay-search-input'))
         )
         search_input.send_keys(search_phrase)
         search_input.send_keys(Keys.RETURN)
 
     def get_news_tags(self):
-        results_div = WebDriverWait(self.driver, 10).until(
+        results_div = WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located((By.CLASS_NAME, 'SearchResultsModule-results'))
         )
         return results_div.find_elements(By.CLASS_NAME, 'PageList-items-item')
