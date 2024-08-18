@@ -7,7 +7,6 @@ URL = 'https://apnews.com/'
 @task
 def run_news_task():
     work_items = workitems.inputs.current.payload
-    filename = workitems.inputs.current.files
     search_phrase = work_items['SEARCH_PHRASE']
     months = work_items['MONTHS']
 
@@ -17,7 +16,7 @@ def run_news_task():
 
     scraper.search(search_phrase)
     results = scraper.get_results(search_phrase, month=months)
-    scraper.write_to_excel(results, News, filename[0])
+    scraper.write_to_excel(results, News, 'orders.xlsx')
 
     scraper.driver_quit()
 
