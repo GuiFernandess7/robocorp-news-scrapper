@@ -96,10 +96,17 @@ class NewsScraper:
         self._enter_search_phrase(search_phrase)
 
     def _click_search_button(self):
-        search_button = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, 'SearchOverlay-search-button'))
-        )
-        search_button.click()
+        try:
+            self._close_overlay()
+
+            search_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, 'SearchOverlay-search-button'))
+            )
+            search_button.click()
+
+        except Exception as e:
+            self.logger.error(f"Error clicking search button: {e}")
+            raise
 
     def _enter_search_phrase(self, search_phrase: str):
         search_input = WebDriverWait(self.driver, 10).until(
