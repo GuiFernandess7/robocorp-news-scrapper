@@ -1,34 +1,25 @@
 from robocorp.tasks import task
-from RPA.Robocorp.WorkItems import WorkItems
+from robocorp import workitems
 from scraper import NewsScraper, News
 
-import os
+URL = 'https://apnews.com/'
 
 @task
 def run_news_task():
-    url = os.getenv('URL', 'https://apnews.com/')
-    search_phrase = os.getenv('search_phrase', "Artificial Intelligence")
-    months = os.getenv('months', 1)
+    work_items = workitems.inputs.current.payload
+    filename = workitems.inputs.current.files
+    search_phrase = work_items['SEARCH_PHRASE']
+    months = work_items['MONTHS']
 
     scraper = NewsScraper()
     scraper.set_webdriver()
-    scraper.open_url(url)
+    scraper.open_url(URL)
 
     scraper.search(search_phrase)
-    results = scraper.get_results(search_phrase, month=2)
-    scraper.write_to_excel(results, News)
-    print(results)
+    results = scraper.get_results(search_phrase, month=months)
+    scraper.write_to_excel(results, News, filename[0])
 
     scraper.driver_quit()
 
 if __name__=="__main__":
     run_news_task()
-
-    """
-    library = WorkItems()
-        library.get_input_work_item()
-
-        variables = library.get_work_item_variables()
-        for variable, value in variables.items():
-            print("%s = %s", variable, value)
-    """
