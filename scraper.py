@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -99,9 +100,11 @@ class NewsScraper:
 
     def extract_news_picture(self, item, default=""):
         try:
-            item_content = item.find_element(By.XPATH, f".//div[contains(@class, 'PagePromo')]//div[contains(@class, 'PagePromo-media')]")
+            item_content = item.find_element(By.XPATH, ".//div[contains(@class, 'PagePromo')]//div[contains(@class, 'PagePromo-media')]")
             img_element = item_content.find_element(By.XPATH, f".//a[contains(@class, 'Link')]//img[contains(@class, 'Image')]")
             return img_element.get_attribute('src')
+        except NoSuchElementException:
+            return default
         except Exception as e:
             self.logger.error(f"Error finding picture: {e}")
             return default
