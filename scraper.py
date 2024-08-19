@@ -215,8 +215,8 @@ class NewsScraper:
         headers = news._fields
         ws.append(headers)
 
-        for employee in results:
-            ws.append(employee)
+        for news in results:
+            ws.append(news)
 
         wb.save(f"./output/{file}")
 
